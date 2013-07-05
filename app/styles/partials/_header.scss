@@ -1,0 +1,92 @@
+
+.main-header {
+
+	padding		: 75px 70px;
+
+	background	: url( /images/background-header.jpg );
+
+	background-size	: cover;
+
+	color		: #fff;
+
+	text-shadow	: 0 -1px 0 #000;
+
+	position	: relative;
+
+}
+
+.mh-title {
+
+	margin		: 0 0 50px;
+
+	font-weight	: 600;
+	font-size	: 4.8em;
+	line-height	: 1.5em;
+	letter-spacing : -3px;
+
+}
+
+.mh-heading {
+
+	margin		: 0;
+	font-weight	: 300;
+	font-size	: 3em;
+	line-height	: 1.2em;
+
+}
+
+.mh-description {
+
+	max-width	: 526px;
+	font-size	: 1.8em;
+	line-height	: 1.33em;
+
+	margin-bottom : 40px;
+
+}
+
+.mh-menu {
+
+	position	: absolute;
+	top			: 0;
+	right		: 0;
+
+	padding		: 55px 50px;
+
+}
+
+.mh-menu-item {
+
+	float		: left;
+	display		: block;
+
+	font-size	: 1.8em;
+	font-weight	: 100;
+
+	padding		: 0 25px;
+
+}
+
+.mh-menu-link {
+
+	color		: #fff;
+	text-decoration : none;
+}
+
+.mh-twitter {
+
+	font-size	: 4em;
+	color		: #fff;
+
+	opacity		: .5;
+
+	transition	: opacity .2s ease-in-out;
+
+	a:hover & {
+
+		opacity		: 1;
+
+	}
+
+
+}
