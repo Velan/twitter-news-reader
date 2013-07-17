@@ -3,191 +3,108 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- build:js scripts/vendor/modernizr.js -->
-        <script src="bower_components/modernizr/modernizr.js"></script>
-        <!-- endbuild -->
-    </head>
-    <body>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <!--[if lt IE 9]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+</head>
+  <body ng-app="nunc.webApp">
+    <!--[if lt IE 9]>
+      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
 
-        <header class="main-header">
+    <header class="main-header">
 
-            <menu class="mh-menu">
-                <li class="mh-menu-item">
-                    <a class="mh-menu-link" href="about">About</a></li>
-                <li class="mh-menu-item">
-                    <a class="mh-menu-link" href="contact">Contact</a>
-                </li>
-            </menu>
+      <menu class="mh-menu">
+        <li class="mh-menu-item">
+          <a class="mh-menu-link" href="about">About</a></li>
+        <li class="mh-menu-item">
+          <a class="mh-menu-link" href="contact">Contact</a>
+        </li>
+      </menu>
 
-            <h1 class="mh-title">nunc.</h1>
+      <h1 class="mh-title">nunc.</h1>
 
-            <h2 class="mh-heading">Say hello to Nunc, <br>a new way to share the news you love.</h2>
+      <h2 class="mh-heading">Say hello to Nunc, <br>a new way to share the news you love.</h2>
 
-            <p class="mh-description">Wes anderson 3 wolf moon godard pug swag, craft beer typewriter forage. Mlkshk swag vinyl, meggings whatever polaroid <a class="link-nunc" href="https://twitter.com/nuncreadable" target="_blank">@nunc</a> trust fund chillwave.</p>
+      <p class="mh-description">Wes anderson 3 wolf moon godard pug swag, craft beer typewriter forage. Mlkshk swag vinyl, meggings whatever polaroid <a class="link-nunc" href="https://twitter.com/nuncreadable" target="_blank">@nunc</a> trust fund chillwave.</p>
 
-            <a href="https://twitter.com/nuncreadable" target="_blank">
-                <i class="icon mh-twitter">L</i>
-            </a>
+      <a href="https://twitter.com/nuncreadable" target="_blank">
+        <i class="icon mh-twitter">L</i>
+      </a>
 
-        </header>
+    </header>
 
-        <div class="articles">
+    <div class="articles" ng-controller="MainCtrl" ng-init="fetch()">
 
-            <article class="article">
+      <article class="article" ng-repeat="article in articles">
 
-                <menu class="ar-share">
+<!--         <img class="ar-background" src="{{article.lead_image_url}}" />
+ -->
+        <menu class="ar-share">
 
-                    <nav class="ar-options">
+          <nav class="ar-options">
 
-                        <li class="ar-option">
-                            <i class="icon ar-social">L</i>
-                        </li>
-                        <li class="ar-option">
-                            <i class="icon ar-social">F</i>
-                        </li>
-                        <li class="ar-option">
-                            <i class="icon ar-social">$</i>
-                        </li>
+          <li class="ar-option">
+            <i class="icon ar-social">L</i>
+          </li>
+          <li class="ar-option">
+            <i class="icon ar-social">F</i>
+          </li>
+          <li class="ar-option">
+            <i class="icon ar-social">$</i>
+          </li>
 
-                    </nav>
+          </nav>
 
-                </menu>
+        </menu>
 
-                <section class="ar-main">
+        <section class="ar-main">
 
-                    <header class="ar-header">
+          <header class="ar-header">
 
-                        <h2 class="ar-title">New Defaults In Web Design: How Much Has The Web Really Changed?</h2>
+          <h2 class="ar-title">
+            <a href="{{article.url}}" target="_blank" class="ar-source">{{article.title}}</a>
+          </h2>
 
-                        <h6 class="ar-meta">
-                            <a href="" target="_blank" class="ar-source">smashingmagazine.com</a>
-                        </h6>
+          <h6 class="ar-meta">
+            <a href="{{article.url}}" target="_blank" class="ar-source">{{article.domain}}</a>
+          </h6>
 
-                    </header>
+          </header>
 
-                    <p class="ar-synopsis">
-    Responsive design is about more than just layout; it’s about designing for the Web, which means, mostly, for people with browsers. And that’s just about everything we know about the people who visit our websites: they are probably using a browser. All the rest we just don’t know.
+          <p class="ar-synopsis" ng-bind-html="article.excerpt">
+          </p>
 
-                    </p>
+        </section>
 
-                </section>
+      </article>
 
-            </article>
-
-            <article class="article article-white">
-
-                <img class="ar-background" src="http://placekitten.com/g/1200/225" />
-
-                <menu class="ar-share">
-
-                    <nav class="ar-options">
-
-                        <li class="ar-option">
-                            <i class="icon ar-social">L</i>
-                        </li>
-                        <li class="ar-option">
-                            <i class="icon ar-social">F</i>
-                        </li>
-                        <li class="ar-option">
-                            <i class="icon ar-social">$</i>
-                        </li>
-
-                    </nav>
-
-                </menu>
-
-                <section class="ar-main">
-
-                    <header class="ar-header">
-
-                        <h2 class="ar-title">The Biggest week in Bourbountown</h2>
-
-                        <h6 class="ar-meta">
-                            <a href="#" target="_blank" class="ar-source">roadsandkingdoms.com</a> via <a href="#" target="_blank" class="ar-source">@RandK</a>
-                        </h6>
-
-                    </header>
-
-                    <p class="ar-synopsis">
-    When the editors of the brand new Sports Illustrated cobbled together the money to pay William Faulkner to come to Louisville to write about the mad scene leading up to the 1955 Kentucky Derby, they had but one real concern: How to keep the famously thirsty Southern writer away from the city’s equally well known, and forgiving...
-
-                    </p>
-
-                </section>
-
-            </article>
-
-            <article class="article-alternate">
-
-                <img class="ar-background" src="http://placekitten.com/430/300" />
+    </div>
 
 
-                <section class="ar-main">
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<!--     
+  <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src='//www.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+ -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
-                    <img class="ar-image" src="http://placekitten.com/430/300" width="430" height="300" />
-
-                    <header class="ar-header">
-
-                        <h2 class="ar-title">The Thin White Line</h2>
-
-                        <h6 class="ar-meta">
-                            <a href="#" target="_blank" class="ar-source">newyorker.com</a> via <a href="#" target="_blank" class="ar-source">@vlanpd</a>
-                        </h6>
-
-                    </header>
-
-                    <p class="ar-synopsis">
-Just after midnight on April 25th, a Syrian medical technician who calls himself Majid Daraya was sitting at home, in the city of Daraya, five miles from the outskirts of Damascus, when he heard an explosion. He ran outside, and, on the southern horizon, he saw a blue haze. “I’ve never seen a blue explosion before,” he remembers thinking....
-                    </p>
-
-                    <menu class="ar-share">
-
-                        <nav class="ar-options">
-
-                            <li class="ar-option">
-                                <i class="icon ar-social">L</i>
-                            </li>
-                            <li class="ar-option">
-                                <i class="icon ar-social">F</i>
-                            </li>
-                            <li class="ar-option">
-                                <i class="icon ar-social">$</i>
-                            </li>
-
-                        </nav>
-
-                    </menu>
-
-
-                </section>
-
-            </article>
-
-        </div>
-
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src='//www.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
-
-        <!-- build:js scripts/main.js -->
-        <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
-        <!-- endbuild -->
-</body>
+  <!-- build:js({.tmp,app}) scripts/scripts.js -->
+  <script src="scripts/app.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+  <!-- endbuild -->
+  </body>
 </html>

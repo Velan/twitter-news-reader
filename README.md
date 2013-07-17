@@ -1,4 +1,0 @@
-nuncweb
-=======
-
-Nunc web interface

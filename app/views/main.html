@@ -1,0 +1,46 @@
+
+<div class="articles">
+
+  <article class="article" ng-repeat="article in articles">
+
+    <img class="ar-background" src="{{article.lead_image_url}}" />
+
+    <menu class="ar-share">
+
+      <nav class="ar-options">
+
+        <li class="ar-option">
+          <i class="icon ar-social">L</i>
+        </li>
+        <li class="ar-option">
+          <i class="icon ar-social">F</i>
+        </li>
+        <li class="ar-option">
+          <i class="icon ar-social">$</i>
+        </li>
+
+      </nav>
+
+    </menu>
+
+    <section class="ar-main">
+
+      <header class="ar-header">
+
+        <h2 class="ar-title">{{article.title}}</h2>
+
+        <h6 class="ar-meta">
+          <a href="{{article.url}}" target="_blank" class="ar-source">{{article.domain}}</a>
+        </h6>
+
+      </header>
+
+      <p class="ar-synopsis">
+        {{article.excerpt}}
+      </p>
+
+    </section>
+
+  </article>
+
+</div>

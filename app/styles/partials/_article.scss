@@ -7,7 +7,6 @@
 
 }
 
-
 .article, .article-alternate {
 
 	display			: block;
@@ -177,13 +176,14 @@
 
 	font-weight		: 200;
 
-	.ar-source, & {
+}
 
-		color			: inherit;
+.ar-source, .ar-meta {
 
-	}
+	color			: inherit;
 
 }
+
 
 .ar-synopsis {
 
@@ -209,5 +209,10 @@
 
 	float			: left;
 	margin-right	: 55px;
+
+}
+
+.lol {
+	
 
 }
