@@ -77,60 +77,61 @@ var io = socketio.listen( server );
 
 io.sockets.on( 'connection', function( socket ) {
 
-  twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
-    var tweet = JSON.parse( stream ),
-      urls = tweet.entities ? tweet.entities.urls : [];
 
-    if( urls.length ) {
+});
 
-      urls.forEach(function( url ) {
+twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
-        readability.getConfidence( url.expanded_url, function( response ) {
+  var tweet = JSON.parse( stream ),
+    urls = tweet.entities ? tweet.entities.urls : [];
 
-          if( response.confidence > .5 ) {
+  if( urls.length ) {
 
-            readability.getParsedUrl( url.expanded_url, function( response ) {
+    urls.forEach(function( url ) {
 
-              var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
-                .update( response.url )
-                .digest( 'hex' );
+      readability.getConfidence( url.expanded_url, function( response ) {
 
-              client.multi([
+        if( response.confidence > .5 ) {
 
-                [ 'SET', key, JSON.stringify( response ) ],
-                [ 'ZADD', 'articles', Date.now(), key ]
+          readability.getParsedUrl( url.expanded_url, function( response ) {
 
-              ]).exec(function( err, replies ) {
+            var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
+              .update( response.url )
+              .digest( 'hex' );
 
-                console.log( 'Added: ' + response.title );
+            client.multi([
 
-                io.emit( 'article', response );
+              [ 'SET', key, JSON.stringify( response ) ],
+              [ 'ZADD', 'articles', Date.now(), key ]
 
-              });
+            ]).exec(function( err, replies ) {
 
-              client.set( key, JSON.stringify( response ) );
+              console.log( 'Added: ' + response.title );
 
-            }, function( err, response ) {
-
-              console.log( err, response, url );
+              io.emit( 'article', response );
 
             });
 
-          }
+            client.set( key, JSON.stringify( response ) );
 
-        }, function( err, data ) {
+          }, function( err, response ) {
+
+            console.log( err, response, url );
+
+          });
+
+        }
+
+      }, function( err, data ) {
 
 
-
-        });
 
       });
 
-    }
+    });
 
-
-  });
+  }
 
 
 });
