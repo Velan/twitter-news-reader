@@ -1,6 +1,9 @@
 'use strict';
 
-angular.module('nunc.webApp', [])
+angular.module('nunc.webApp', [ 'btford.socket-io' ])
+  .run(function () {
+    socket.forward('error');
+  })
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {

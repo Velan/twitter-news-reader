@@ -13,17 +13,33 @@ var util    = require( 'util' )
 
 exports.list = function( req, res ) {
 
-  var articles = [];
+  var articles = [],
 
-  client.sort( 'articles', 'BY', 'nosort', 'GET', '*', 'LIMIT', 0, 20, 'DESC', function( err, response ) {
+    offset = parseInt( req.query.offset, 10 ) || 0,
+    limit = Math.min( 100, parseInt( req.query.offset, 10 ) || 20 );
 
-    response.forEach(function( article ) {
+  client.multi([
+
+    [ 'SORT', 'articles', 'BY', 'nosort', 'GET', '*', 'LIMIT', offset, limit, 'DESC' ],
+    [ 'ZCOUNT', 'articles', '-inf', '+inf' ]
+
+  ]).exec(function( err, results ) {
+
+    results[0].forEach(function( article ) {
 
       articles.push( JSON.parse( article ) );
 
     });
 
-    res.json( articles );
+
+    res.json({
+
+      articles: articles,
+      total: results[1],
+      offset: offset,
+      limit: limit
+
+    });
 
   });
 

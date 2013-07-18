@@ -4,6 +4,8 @@
  */
 
 var express = require('express')
+  , http = require( 'http' )
+  , socketio = require( 'socket.io' )
   , routes = require('./routes')
   , news = require('./routes/news')
   , http = require('http')
@@ -55,6 +57,11 @@ twitter.setAuth(
 
 );
 
+var server = http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+
 twitter.get( 'application/rate_limit_status', { ressource : 'statuses' }, function( data, error, status ) {
 
   if( error ) {
@@ -66,62 +73,65 @@ twitter.get( 'application/rate_limit_status', { ressource : 'statuses' }, functi
 
 });
 
-twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
+var io = socketio.listen( server );
 
-  console.log( 'tweet' );
+io.sockets.on( 'connection', function( socket ) {
 
-  var tweet = JSON.parse( stream ),
-    urls = tweet.entities ? tweet.entities.urls : [];
+  twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
-  if( urls.length ) {
+    var tweet = JSON.parse( stream ),
+      urls = tweet.entities ? tweet.entities.urls : [];
 
-    urls.forEach(function( url ) {
+    if( urls.length ) {
 
-      readability.getConfidence( url.expanded_url, function( response ) {
+      urls.forEach(function( url ) {
 
-        if( response.confidence > .5 ) {
+        readability.getConfidence( url.expanded_url, function( response ) {
 
-          readability.getParsedUrl( url.expanded_url, function( response ) {
+          if( response.confidence > .5 ) {
 
-            var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
-              .update( response.url )
-              .digest( 'hex' );
+            readability.getParsedUrl( url.expanded_url, function( response ) {
 
-            client.multi([
+              var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
+                .update( response.url )
+                .digest( 'hex' );
 
-              [ 'set', key, JSON.stringify( response ) ],
-              [ 'zadd', 'articles', Date.now(), key ]
+              client.multi([
 
-            ]).exec(function( err, replies ) {
+                [ 'SET', key, JSON.stringify( response ) ],
+                [ 'ZADD', 'articles', Date.now(), key ]
 
-              console.log( 'Added: ' + response.title );
+              ]).exec(function( err, replies ) {
+
+                console.log( 'Added: ' + response.title );
+
+                io.emit( 'article', response );
+
+              });
+
+              client.set( key, JSON.stringify( response ) );
+
+            }, function( err, response ) {
+
+              console.log( err, response, url );
 
             });
 
-            client.set( key, JSON.stringify( response ) );
+          }
 
-          }, function( err, response ) {
-
-            console.log( err, response, url );
-
-          });
-
-        }
-
-      }, function( err, data ) {
+        }, function( err, data ) {
 
 
+
+        });
 
       });
 
-    });
+    }
 
-  }
+
+  });
 
 
 });
 
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});

@@ -1,32 +1,65 @@
 'use strict';
 
-angular.module('nunc.webApp', [ 'ngSanitize' ])
-  .controller('MainCtrl', function ( $scope, $http, $templateCache ) {
+angular.module('nunc.webApp', [ 'ngSanitize', 'infiniteScroll', 'btford.socket-io' ])
+  .controller('ArticlesCtrl', function ( $scope, socket, $templateCache, $http ) {
 
-    console.log( $scope );
+    socket.forward( 'article', $scope );
+
+    $scope.$on( 'socket:article', function( ev, article ) {
+
+      $scope.articles.unshift( article );
+      $scope.total += 1;
+      $scope.offset += 1;
+
+    });
+
+    $scope.offset = 0;
+    $scope.limit = 20;
+
+    $scope.canLoad = true;
 
     $scope.method = 'GET';
     $scope.url = '/api/news';
 
+    $scope.articles = [];
+
     $scope.fetch = function() {
 
-      $scope.code = null;
-      $scope.response = null;
+      if( $scope.http ) {
+        return;
+      }
 
-      $http({
+      // $scope.code = null;
+      // $scope.response = null;
+
+      $scope.http = $http({
 
         method: $scope.method,
-        url: $scope.url,
+        url: $scope.url + '?offset=' + $scope.offset + '&limit=' + $scope.limit,
         cache: $templateCache
 
       })
       .success(function( data, status ) {
 
-        $scope.articles = data;
-        $scope.status = status;
+        $scope.offset += $scope.limit;
+        delete $scope.http;
+
+        $scope.articles = $scope.articles.concat( data.articles );
+        $scope.total = data.total;
+
+        if( $scope.total < $scope.offset ) {
+
+          $scope.canLoad = false;
+
+        }
+        // $scope.status = status;
 
       })
-      .error();
+      .error(function() {
+
+        delete $scope.http;
+
+      });
 
     };
 
