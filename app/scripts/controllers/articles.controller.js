@@ -1,6 +1,15 @@
+
+define([ 
+  'angular'
+  , 'socket'
+  , 'angular.socket'
+  , 'angular.sanitize'
+  , 'angular.scroll' 
+  ], function( angular, socket ) {
+	
 'use strict';
 
-angular.module('nunc.webApp', [ 'ngSanitize', 'infiniteScroll', 'btford.socket-io' ])
+return angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll', 'btford.socket-io' ])
   .controller('ArticlesCtrl', function ( $scope, socket, $templateCache, $http ) {
 
     socket.forward( 'article', $scope );
@@ -64,3 +73,6 @@ angular.module('nunc.webApp', [ 'ngSanitize', 'infiniteScroll', 'btford.socket-i
     };
 
   });
+
+
+});

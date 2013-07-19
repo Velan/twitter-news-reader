@@ -1,0 +1,9 @@
+{
+  "name": "angular-infinite-scroll",
+  "version": "0.0.0",
+  "commit": "adf7c5fa3564a35631fc04ceeaea72bc352f0432",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sparkalow/angular-infinite-scroll.git"
+  }
+}
