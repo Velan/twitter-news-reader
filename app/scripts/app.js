@@ -1,14 +1,10 @@
 /*global define */
 define([
   'angular',
-  'socket',
-  // 'angular.socket',
   'controllers/articles.controller'
 
 ], function (
     angular,
-    socket,
-    // angularSocket,
     articlesController
   ) {
 

@@ -27,8 +27,6 @@ var express = require('express')
 var app = express();
 // all environments
 
-console.log( process.env.PORT );
-
 app.set( 'port', process.env.PORT || 3000 );
 
 // set the path to the static ressources
@@ -88,13 +86,26 @@ twitter.get( 'application/rate_limit_status', { ressource : 'statuses' }, functi
 
 var io = socketio.listen( server );
 
-io.sockets.on( 'connection', function( socket ) {
-
-
-
-});
-
 if ( 'production' == app.get('env') ) {
+
+  var clientPub = redis.createClient(),
+    clientSub = redis.createClient();
+
+  clientSub.psubscribe('article');
+
+
+
+  io.sockets.on( 'connection', function( socket ) {
+
+    var counter = 0;
+
+    clientSub.on( 'pmessage', function( pattern, channel, message ) {
+
+      socket.emit( 'nunc:article', message );
+
+    });
+
+  });
 
   twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
@@ -127,8 +138,8 @@ if ( 'production' == app.get('env') ) {
 
                 client.zadd( 'articles', Date.now(), key, function( err, result ) {
 
-                  io.emit( 'article', response );
-
+                  clientPub.publish( 'article', response );
+                  
                 });
 
               });
@@ -153,6 +164,22 @@ if ( 'production' == app.get('env') ) {
 
     }
 
+
+  });
+
+}
+else {
+
+  io.sockets.on( 'connection', function( socket ) {
+
+    var counter = 0;
+
+    setInterval(function() {
+
+      socket.emit( 'nunc:article', { title : 'Socket test ' + counter, excerpt : 'Something has been pushed from the server!' });
+      counter++;
+
+    }, 10000);
 
   });
 

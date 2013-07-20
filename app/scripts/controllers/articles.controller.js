@@ -1,20 +1,19 @@
 
 define([
   'angular',
-  'socket',
-  // 'angular.socket',
+  '../factories/socket.factory',
   'angular.sanitize',
   'angular.scroll'
-], function( angular ) {
+], function( angular, socketFactory ) {
 
   'use strict';
 
-  var controller = angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll' ])
-  .controller('articles', [ '$scope', '$templateCache', '$http', function ( $scope, $templateCache, $http ) {
+  var controller = angular.module('nunc.controllers', [ socketFactory.name, 'ngSanitize', 'infiniteScroll' ])
+  .controller('articles', [ '$scope', '$templateCache', '$http', 'socket', function ( $scope, $templateCache, $http, socket ) {
 
-    // socket.forward( 'article', $scope );
+    socket.on( 'nunc:article', function( article ) {
 
-    $scope.$on( 'socket:article', function( ev, article ) {
+      console.log( article );
 
       $scope.articles.unshift( article );
       $scope.total += 1;
