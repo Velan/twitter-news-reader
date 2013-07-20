@@ -111,7 +111,6 @@ if ( 'production' == app.get('env') ) {
   clientSub.psubscribe('article');
 
 
-
   io.sockets.on( 'connection', function( socket ) {
 
     var counter = 0;
@@ -140,7 +139,7 @@ if ( 'production' == app.get('env') ) {
             readability.getParsedUrl( url.expanded_url, function( response ) {
 
               // Check for at least a title and an excerpt
-              if( ! response.title || ! respnse.excerpt) {
+              if( ! response.title || ! response.excerpt) {
 
                 return;
 
