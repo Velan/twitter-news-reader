@@ -117,7 +117,7 @@ if ( 'production' == app.get('env') ) {
 
     clientSub.on( 'pmessage', function( pattern, channel, message ) {
 
-      socket.emit( 'nunc:article', message );
+      socket.emit( 'nunc:article', JSON.parse( message ) );
 
     });
 
@@ -149,12 +149,15 @@ if ( 'production' == app.get('env') ) {
                 .update( response.url )
                 .digest( 'hex' );
 
+              var stringResponse = JSON.stringify( response );
 
-              client.set( key, JSON.stringify( response ), function( err, result ) {
+              client.set( key, stringResponse, function( err, result ) {
 
                 client.zadd( 'articles', Date.now(), key, function( err, result ) {
 
-                  clientPub.publish( 'article', response );
+                  console.log( 'Added new article: ' + response.title );
+
+                  clientPub.publish( 'article', stringResponse );
                   
                 });
 
