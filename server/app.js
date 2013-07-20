@@ -25,28 +25,39 @@ var express = require('express')
 
 
 var app = express();
-
 // all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+
+console.log( process.env.PORT );
+
+app.set( 'port', process.env.PORT || 3000 );
+
+// set the path to the static ressources
+app.set( 'static', process.env.static || '../dist' );
+app.set( 'path_static', path.normalize( path.join( __dirname, app.get( 'static' ) ) ) );
+app.use( express.favicon() );
+app.use( express.logger('dev') );
+app.use( express.compress() );
+app.use( express.bodyParser() );
+app.use( express.methodOverride() );
+app.use( app.router );
+
+app.use( '/images', express.static( app.get( 'path_static' ) + '/images' ) );
+app.use( '/scripts', express.static( app.get( 'path_static' ) + '/scripts' ) );
+app.use( '/styles', express.static( app.get( 'path_static' ) + '/styles' ) );
+app.use( '/bower_components', express.static( app.get( 'path_static' ) + '/bower_components' ) );
+
 
 // development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+if ( 'development' == app.get('env') ) {
+
+  app.use( express.errorHandler() );
+
 }
 
-app.get('/', routes.index );
-// app.get('/users', user.list );
+require( __dirname + '/routes/index.js' )( app );
 
-app.get( '/news', news.list );
-app.get( '/news/:id', news.one );
+app.get( '/api/news', news.list );
+app.get( 'api/news/:id', news.one );
 
 twitter.setAuth(
 
@@ -58,7 +69,9 @@ twitter.setAuth(
 );
 
 var server = http.createServer(app).listen(app.get('port'), function(){
+
   console.log('Express server listening on port ' + app.get('port'));
+
 });
 
 
@@ -81,58 +94,67 @@ io.sockets.on( 'connection', function( socket ) {
 
 });
 
-twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
+if ( 'production' == app.get('env') ) {
 
-  var tweet = JSON.parse( stream ),
-    urls = tweet.entities ? tweet.entities.urls : [];
+  twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
-  if( urls.length ) {
+    var tweet = JSON.parse( stream ),
+      urls = tweet.entities ? tweet.entities.urls : [];
 
-    urls.forEach(function( url ) {
+    if( urls.length ) {
 
-      readability.getConfidence( url.expanded_url, function( response ) {
+      urls.forEach(function( url ) {
 
-        if( response.confidence > .5 ) {
+        readability.getConfidence( url.expanded_url, function( response ) {
 
-          readability.getParsedUrl( url.expanded_url, function( response ) {
+          if( response.confidence > .5 ) {
 
-            var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
-              .update( response.url )
-              .digest( 'hex' );
+            readability.getParsedUrl( url.expanded_url, function( response ) {
 
-            client.multi([
+              // Check for at least a title and an excerpt
+              if( ! response.title || ! respnse.excerpt) {
 
-              [ 'SET', key, JSON.stringify( response ) ],
-              [ 'ZADD', 'articles', Date.now(), key ]
+                return;
 
-            ]).exec(function( err, replies ) {
+              }
 
-              console.log( 'Added: ' + response.title );
+              var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
+                .update( response.url )
+                .digest( 'hex' );
 
-              io.emit( 'article', response );
+
+              client.set( key, JSON.stringify( response ), function( err, result ) {
+
+                client.zadd( 'articles', Date.now(), key, function( err, result ) {
+
+                  io.emit( 'article', response );
+
+                });
+
+              });
+
+              client.set( key, JSON.stringify( response ) );
+
+            }, function( err, response ) {
+
+              console.log( err, response, url );
 
             });
 
-            client.set( key, JSON.stringify( response ) );
+          }
 
-          }, function( err, response ) {
-
-            console.log( err, response, url );
-
-          });
-
-        }
-
-      }, function( err, data ) {
+        }, function( err, data ) {
 
 
+
+        });
 
       });
 
-    });
-
-  }
+    }
 
 
-});
+  });
+
+}
 

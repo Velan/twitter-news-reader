@@ -1,31 +1,27 @@
 /*global define */
 define([
-	'angular'
-  , 'socket'
-  , 'angular.socket'
-	, 'controllers/articles.controller'
+  'angular',
+  'socket',
+  // 'angular.socket',
+  'controllers/articles.controller'
 
-	], function ( 
-    angular
-    , socket
-    , angular_socket
-    , articles_controller
+], function (
+    angular,
+    socket,
+    // angularSocket,
+    articlesController
   ) {
+
   'use strict';
 
-  return angular.module( 'nunc.webApp', [ 'btford.socket-io', 'nunc.controllers' ] )
-  .run(function ( socket ) {
-
-    socket.forward( 'error' );
-
-  })
-  .config(function ( $routeProvider ) {
+  return angular.module( 'nunc', [ articlesController.name ] )
+  .config([ '$routeProvider', function ( $routeProvider ) {
 
     $routeProvider
       .when('/', {
 
         // templateUrl: 'views/main.html',
-        controller: 'ArticlesCtrl'
+        controller: articlesController.name
 
       })
       .otherwise({
@@ -34,6 +30,6 @@ define([
 
       });
 
-  })
+  }]);
 
 });

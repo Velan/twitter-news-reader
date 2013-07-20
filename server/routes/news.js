@@ -3,49 +3,53 @@
  * GET users listing.
  */
 
-// var twitter = require( '../twitter/twitter' );
-
 
 var util    = require( 'util' )
   , redis = require('redis')
   , client = redis.createClient();
 
-
 exports.list = function( req, res ) {
 
-  var articles = [],
+  var offset = parseInt( req.query.offset, 10 ) || 0,
+    limit = Math.min( 100, parseInt( req.query.limit, 10 ) || 20 ),
 
-    offset = parseInt( req.query.offset, 10 ) || 0,
-    limit = Math.min( 100, parseInt( req.query.offset, 10 ) || 20 );
+    response = { articles: [], offset: offset, limit: limit };
 
-  client.multi([
+  console.time( 'Retrieve articles' );
 
-    [ 'SORT', 'articles', 'BY', 'nosort', 'GET', '*', 'LIMIT', offset, limit, 'DESC' ],
-    [ 'ZCOUNT', 'articles', '-inf', '+inf' ]
+  client.sort(
 
-  ]).exec(function( err, results ) {
+    'articles', 'BY', 'nosort',
+    'GET', '*',
+    'LIMIT', offset, limit, 'DESC',
+    function( err, articles ) {
 
-    results[0].forEach(function( article ) {
+      articles.forEach(function( article ) {
 
-      articles.push( JSON.parse( article ) );
+        article = JSON.parse( article );
+        delete article.content;
 
-    });
+        response.articles.push( article );
 
+      });
 
-    res.json({
+      client.zcount( 'articles', '-inf', '+inf', function( err, articleCount ) {
 
-      articles: articles,
-      total: results[1],
-      offset: offset,
-      limit: limit
+        response.total = articleCount;
 
-    });
+        res.json( response );
+        console.timeEnd( 'Retrieve articles' );
 
-  });
+      });
+
+    }
+
+  );
+
 
 };
 
-exports.one = function() {
+exports.one = function( id ) {
 
 
 

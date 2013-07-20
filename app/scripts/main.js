@@ -1,39 +1,32 @@
+
 require.config({
 
-  baseUrl: '/scripts'
-
-  , paths: {
+  paths: {
     // jquery: '../bower_components/jquery/jquery'
-    angular: '../bower_components/angular/angular'
-    , socket: '../bower_components/socket.io-client/dist/socket.io'
-    , 'angular.sanitize': '../bower_components/angular-sanitize/angular-sanitize'
-    , 'angular.scroll': '../lib/angular-infinite-scroll/src/infinite-scroll'
-    , 'angular.socket': '../bower_components/angular-socket-io/socket'
+    angular: '../bower_components/angular/angular',
+    socket: '../lib/socket.io-client/dist/socket.io',
+    'angular.sanitize': '../bower_components/angular-sanitize/angular-sanitize',
+    'angular.scroll': '../lib/angular-infinite-scroll/src/infinite-scroll',
+    'angular.socket': '../bower_components/angular-socket-io/socket'
 
-
-  }
-
-  , shim: {
+  },
+  shim: {
 
     'angular': {
-
       exports: 'angular'
-
-    }
-    , 'angular.sanitize': {
+    },
+    'angular.sanitize': {
       deps: [ 'angular' ]
-    }
-    , 'angular.scroll': {
+    },
+    'angular.scroll': {
       deps: [ 'angular' ]
-    }
-    , 'angular.socket': {
+    },
+    'angular.socket': {
       deps: [ 'angular', 'socket' ]
     }
 
-
-  }
-
-  , priority: [
+  },
+  priority: [
 
     'angular'
 
@@ -41,14 +34,14 @@ require.config({
 
 });
 
-require([ 
-  'angular'
-  , 'app'
+require([
+  'angular',
+  'app'
 
-  ], function ( angular, app ) {
+], function ( angular, app ) {
 
   'use strict';
 
-  angular.bootstrap(document, [ app['name'] ]);
+  angular.bootstrap( document.body, [ app.name ] );
 
 });

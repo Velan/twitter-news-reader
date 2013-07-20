@@ -1,18 +1,18 @@
 
-define([ 
-  'angular'
-  , 'socket'
-  , 'angular.socket'
-  , 'angular.sanitize'
-  , 'angular.scroll' 
-  ], function( angular, socket ) {
-	
-'use strict';
+define([
+  'angular',
+  'socket',
+  // 'angular.socket',
+  'angular.sanitize',
+  'angular.scroll'
+], function( angular ) {
 
-return angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll', 'btford.socket-io' ])
-  .controller('ArticlesCtrl', function ( $scope, socket, $templateCache, $http ) {
+  'use strict';
 
-    socket.forward( 'article', $scope );
+  var controller = angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll' ])
+  .controller('articles', [ '$scope', '$templateCache', '$http', function ( $scope, $templateCache, $http ) {
+
+    // socket.forward( 'article', $scope );
 
     $scope.$on( 'socket:article', function( ev, article ) {
 
@@ -48,7 +48,7 @@ return angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll', 'btf
         cache: $templateCache
 
       })
-      .success(function( data, status ) {
+      .success(function( data ) {
 
         $scope.offset += $scope.limit;
         delete $scope.http;
@@ -72,7 +72,8 @@ return angular.module('nunc.controllers', [ 'ngSanitize', 'infiniteScroll', 'btf
 
     };
 
-  });
+  }]);
 
+  return controller;
 
 });
