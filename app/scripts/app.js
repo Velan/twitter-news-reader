@@ -1,16 +1,18 @@
 /*global define */
 define([
   'angular',
-  'controllers/articles.controller'
+  'controllers/articles.controller',
+  'controllers/article.controller'
 
 ], function (
     angular,
-    articlesController
+    articlesController,
+    articleController
   ) {
 
   'use strict';
 
-  return angular.module( 'nunc', [ articlesController.name ] )
+  return angular.module( 'nunc', [ articlesController.name, articleController.name ] )
   .config([ '$routeProvider', function ( $routeProvider ) {
 
     $routeProvider

@@ -8,12 +8,10 @@ define([
 
   'use strict';
 
-  var controller = angular.module('nunc.controllers', [ socketFactory.name, 'ngSanitize', 'infiniteScroll' ])
-  .controller('articles', [ '$scope', '$templateCache', '$http', 'socket', function ( $scope, $templateCache, $http, socket ) {
+  var controller = angular.module( 'articles.controller', [ socketFactory.name, 'ngSanitize', 'infiniteScroll' ])
+  .controller('articlesCtrl', [ '$scope', '$templateCache', '$http', 'socket', function ( $scope, $templateCache, $http, socket ) {
 
     socket.on( 'nunc:article', function( article ) {
-
-      console.log( article );
 
       $scope.articles.unshift( article );
       $scope.total += 1;

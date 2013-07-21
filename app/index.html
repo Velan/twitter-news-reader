@@ -44,9 +44,9 @@
 
     </header>
 
-    <div class="articles" ng-controller="articles" treshold="100" infinite-scroll="fetch()" ng-init="fetch()">
+    <div class="articles" ng-controller="articlesCtrl" treshold="100" infinite-scroll="fetch()" ng-init="fetch()">
 
-      <article class="article" ng-repeat="article in articles">
+      <article class="article" ng-repeat="article in articles" ng-controller="articleCtrl">
 
 <!--         <img class="ar-background" src="{{article.lead_image_url}}" />
  -->

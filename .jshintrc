@@ -20,5 +20,5 @@
     "smarttabs": true,
     "jquery": false,
 
-    "predef" : [ "define" ]
+    "predef" : [ "define", "Modernizr" ]
 }

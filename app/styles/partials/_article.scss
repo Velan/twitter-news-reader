@@ -23,6 +23,12 @@
 
 	box-shadow		: inset 0 -1px 0 #dedede;
 
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		font-size		: 1em;
+
+	}
+
 }
 
 .article:last-of-type {
