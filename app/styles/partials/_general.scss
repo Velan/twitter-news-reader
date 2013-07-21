@@ -1,9 +1,16 @@
 
 @include font-face( "Socialico", font-files("Socialico.ttf", "Socialico.otf"));
 
+* {
+
+	box-sizing		: border-box;
+
+}
+
 html {
 
 	font			: 200 normal normal 62.5%/1.5em "Helvetica Neue", Arial, sans-serif;
+-webkit-font-smoothing	: antialiased;
 
 }
 

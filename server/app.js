@@ -189,18 +189,18 @@ if ( 'production' == app.get('env') ) {
 }
 else {
 
-  io.sockets.on( 'connection', function( socket ) {
+  // io.sockets.on( 'connection', function( socket ) {
 
-    var counter = 0;
+  //   var counter = 0;
 
-    setInterval(function() {
+  //   setInterval(function() {
 
-      socket.emit( 'nunc:article', { title : 'Socket test ' + counter, excerpt : 'Something has been pushed from the server!' });
-      counter++;
+  //     socket.emit( 'nunc:article', { title : 'Socket test ' + counter, excerpt : 'Something has been pushed from the server!' });
+  //     counter++;
 
-    }, 10000);
+  //   }, 10000);
 
-  });
+  // });
 
 }
 

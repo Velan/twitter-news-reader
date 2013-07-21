@@ -1,6 +1,20 @@
 
+@import "compass";
+
+// Breakpoint configuration
+@import "breakpoint";
+
+$breakpoint-mobile-portrait : 320px;
+$breakpoint-mobile-landscape : 480px;
+$breakpoint-tablet-portrait : 600px;
+$breakpoint-tablet-landscape : 768px;
+$breakpoint-desktop : 990px;
+
+$breakpoint-hi-rez : 1.5 device-pixel-ratio;
+
+
 // Normalize
-@import "../bower_components/normalize-css/normalize.css";
+// @import "CSS:../bower_components/normalize-css/normalize";
 
 // Import mixins & variables
 @import "partials/base";

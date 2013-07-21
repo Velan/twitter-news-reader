@@ -2,7 +2,7 @@
 define([
   'angular',
   'io'
-], function( angular ) {
+], function( angular, io ) {
 
   'use strict';
 
@@ -27,7 +27,7 @@ define([
 
       },
 
-      emit: function() {
+      emit: function( eventName, data, callback ) {
 
         socket.emit( eventName, data, function() {
 
@@ -42,7 +42,7 @@ define([
           });
         });
       }
-    }
+    };
 
   }]);
 

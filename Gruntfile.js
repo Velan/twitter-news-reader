@@ -57,7 +57,7 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         // change this to '0.0.0.0' to access the server from outside
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       },
       livereload: {
         options: {
@@ -149,6 +149,7 @@ module.exports = function (grunt) {
     },
     compass: {
       options: {
+        require: [ 'sass-css-importer', 'breakpoint' ],
         sassDir: '<%= yeoman.app %>/styles',
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
@@ -159,18 +160,19 @@ module.exports = function (grunt) {
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/styles/fonts',
-        relativeAssets: false
+        relativeAssets: false,
+        outputStyle: 'compressed'
       },
       dist: {},
       server: {
         options: {
-          debugInfo: true
+          // debugInfo: true
         }
       }
     },
     autoprefixer: {
       options: {
-        browsers: [ 'last 1 version' ]
+        browsers: [ 'last 2 versions', '> 1%' ]
       },
       dist: {
         files: [{
@@ -388,4 +390,5 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
 };

@@ -1,13 +1,14 @@
 
-
 .articles {
 
-	max-width	: 1200px;
-	margin		: 0 auto;
-
+	max-width		: 900px;
+	margin			: 0 auto;
 }
 
-.article, .article-alternate {
+
+.article {
+
+	font-size		: #{$mobile-ratio}em;
 
 	display			: block;
 	overflow		: hidden;
@@ -15,166 +16,265 @@
 	position		: relative;
 
 	width			: 100%;
-	border-bottom	: 1px solid #424242;
-
-}
-
-.article {
-
-	background		: #f5f6f6;
-	background-size	: cover;
+	padding			: 0;
+	border-bottom	: 1px solid #fff;
 
 	color			: #424242;
 
-}
-
-
-.article-alternate {
-
-
+	box-shadow		: inset 0 -1px 0 #dedede;
 
 }
 
-.article-white {
+.article:last-of-type {
 
-	color			: #fff;
-	text-shadow		: 0 -1px 0 #000;
-
-
-	background		: #000;
+	border			: 0;
+	box-shadow		: 0;
 
 }
 
-.ar-background {
+// .article, .article-alternate {
 
-	position		: absolute;
+// 	display			: block;
+// 	overflow		: hidden;
 
-	z-index			: 0;
+// 	position		: relative;
 
-	min-width		: 100%;
-	min-height		: 100%;
+// 	width			: 100%;
+// 	border-bottom	: 1px solid #424242;
 
-	opacity			: .4;
+// }
 
-}
+// .article {
+
+// 	background		: #f5f6f6;
+// 	background-size	: cover;
+
+// 	color			: #424242;
+
+// }
+
+
+// .article-alternate {
+
+
+
+// }
+
+// .article-white {
+
+// 	color			: #fff;
+// 	text-shadow		: 0 -1px 0 #000;
+
+
+// 	background		: #000;
+
+// }
+
+// .ar-background {
+
+// 	position		: absolute;
+
+// 	z-index			: 0;
+
+// 	min-width		: 100%;
+// 	min-height		: 100%;
+
+// 	opacity			: .4;
+
+// }
 
 
 .ar-share {
 
-	.article & {
+	position			: absolute;
+	right				: 0;
+	top					: 0;
+	z-index				: 5;
+
+	height				: 100%;
+	width				: 60px;
+	margin				: 0;
+	padding				: 0;
+
+	background			: #e4e5e5;
+
+	.icon {
+
+		text-shadow		: 0 1px 0 rgba( 0, 0, 0, .6 );
+		font-size		: 4.8em / $mobile-ratio;
+		line-height		: 1em;
+		color			: #fff;
+
+		position		: relative;
+		top				: 50%;
+
+		margin-top		: -2.4em;
+	}
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
 
 		background		: rgba( 0, 0, 0, .07 );
 
 		margin			: 0;
-		padding			: 0;
 
 		transition		: opacity .2s ease-in-out;
 
 		padding			: 20px 0;
 		opacity			: 0;
 
-		position		: absolute;
-		top				: 0;
+		right			: auto;
 		left			: 0;
-		z-index			: 10;
+
+		z-index			: 15;
 
 		min-height		: 100%;
 
+		.article:hover & {
+
+			opacity			: 1;
+
+		}
 
 	}
 
-	.article:hover & {
+}
 
-		opacity			: 1;
+// .ar-share {
 
-	}
+// 	.article & {
 
-	.article-alternate & {
+// 		background		: rgba( 0, 0, 0, .07 );
 
-		display			: inline-block;
-		padding			: 10px 0 0;
+// 		margin			: 0;
+// 		padding			: 0;
 
-	}
+// 		transition		: opacity .2s ease-in-out;
+
+// 		padding			: 20px 0;
+// 		opacity			: 0;
+
+// 		position		: absolute;
+// 		top				: 0;
+// 		left			: 0;
+// 		z-index			: 10;
+
+// 		min-height		: 100%;
+
+
+// 	}
+
+// 	.article:hover & {
+
+// 		opacity			: 1;
+
+// 	}
+
+// 	.article-alternate & {
+
+// 		display			: inline-block;
+// 		padding			: 10px 0 0;
+
+// 	}
+
+// }
+
+.ar-options {
+
+	height			: 100%;
 
 }
 
 .ar-option {
 
-	.article & {
-
-		display			: block;
-		text-align		: center;
-
-	}
-
-	.article-alternate & {
-
-		display			: inline-block;
-		padding			: 0 40px;
-
-	}
-
-}
+	height			: 50%;
+	display			: block;
+	text-align		: center;
+	position		: relative;
 
 
-.icon {
+	// .article & {
 
-	text-shadow		: 0 1px 0 rgba( 0, 0, 0, .6 );
+	// 	display			: block;
+	// 	text-align		: center;
 
-	.ar-share & {
+	// }
 
-		font-size		: 3.6em;
-		color			: #fff;
+// 	.article-alternate & {
 
-	}
+// 		display			: inline-block;
+// 		padding			: 0 40px;
 
-	.article & {
-
-		padding			: 20px;
-
-	}
-
-	.article-alternate & {
-
-		display			: inline-block;
-
-	}
+// 	}
 
 }
+
 
 .ar-main {
 
-	padding			: 35px 60px 35px 110px;
+	padding			: 35px * $mobile-ratio;;
 
 	position		: relative;
-	z-index			: 5;
+	z-index			: 10;
 
-	.article-alternate & {
+	background		: #f5f6f6;
 
-		text-align		: center;
+	box-shadow		: 1px 0 5px rgba( 0, 0, 0, .27);
+
+	@include breakpoint( max-width $breakpoint-tablet-portrait ) {
+
+		transition		: all .2s ease-in-out;
+
+		.article:hover & {
+
+			transform		: translate( -60px );
+
+		}
 
 	}
 
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		padding-left		: 75px;
+
+	}
+
+
 }
+
 
 
 .ar-title {
 
-	font-size		: 2.4em;
+	font-size		: 3.4em;
 	font-family		: Palatino, serif;
-	font-weight		: 300;
-	line-height		: 1.5em;
+	font-weight		: 600;
+	line-height		: 1.25em;
 
-	margin-bottom	: 10px;
+	margin			: 0 0 10px;
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		font-size		: 2.4em;
+		line-height		: 1em;
+
+	}
 
 }
 
 .ar-meta {
 
-	font-size		: 1.4em;
+	font-size		: 2em;
 	margin			: 0 0 10px;
 
 	font-weight		: 200;
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		font-size		: 1.4em;
+		line-height		: 1.71em;
+
+	}
+
 
 }
 
@@ -187,32 +287,37 @@
 
 .ar-synopsis {
 
-	font-size		: 1.8em;
-	line-height		: 1.33em;
+	font-size		: 2.4em;
+	line-height		: 1.25em;
 
-	.article & {
+	@include breakpoint( $breakpoint-tablet-portrait ) {
 
-		max-width		: 800px;
-
-	}
-
-	.article-alternate & {
+		font-size		: 1.8em;
+		line-height		: 1.33em;
 
 		text-align		: justify;
 
 	}
 
+
+	// .article & {
+
+	// 	max-width		: 800px;
+
+	// }
+
+	// .article-alternate & {
+
+	// 	text-align		: justify;
+
+	// }
+
 }
 
 
-.ar-image {
+// .ar-image {
 
-	float			: left;
-	margin-right	: 55px;
+// 	float			: left;
+// 	margin-right	: 55px;
 
-}
-
-.lol {
-	
-
-}
+// }

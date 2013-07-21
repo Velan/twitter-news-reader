@@ -1,10 +1,9 @@
 
 .main-header {
 
-	padding		: 75px 70px;
+	padding		: 70px*$mobile-ratio 30px 20px 25px;
 
-	background	: url( /images/background-header.jpg );
-
+	background	: url( /images/background-header.jpg ) top center;
 	background-size	: cover;
 
 	color		: #fff;
@@ -13,57 +12,114 @@
 
 	position	: relative;
 
+	font-size	: #{$mobile-ratio}em;
+	font-weight	: 400;
+
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		padding		: 75px 70px;
+		font-size	: 1em;
+
+	}
+
 }
 
 .mh-title {
 
-	margin		: 0 0 50px;
+	margin-top	: 0; 
 
-	font-weight	: 600;
 	font-size	: 4.8em;
-	line-height	: 1.5em;
-	letter-spacing : -3px;
+	font-weight	: 600;
+	letter-spacing : -0.05em;
+	line-height	: .67em;
 
 }
 
 .mh-heading {
 
-	margin		: 0;
-	font-weight	: 300;
-	font-size	: 3em;
+	margin		: 2.8em 0 0;
+
+	font-size	: 4em;
 	line-height	: 1.2em;
+	font-weight : inherit; 
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		font-size	: 3em;
+
+	}
 
 }
 
 .mh-description {
 
-	max-width	: 526px;
-	font-size	: 1.8em;
-	line-height	: 1.33em;
+	margin-top	: .9em;
 
-	margin-bottom : 40px;
+	max-width	: 530px;
+
+	font-size	: 2.6em;
+	line-height : 1.25em;
+	font-weight	: 400;
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		font-size	: 1.8em;
+
+	}
 
 }
 
 .mh-menu {
 
 	position	: absolute;
-	top			: 0;
-	right		: 0;
+	right		: 40px * $mobile-ratio;
+	top			: 70px * $mobile-ratio;
 
-	padding		: 55px 50px;
+	margin		: 0;
+	padding		: 0;
+
+	.icons-menu {
+
+		display		: block;
+		cursor		: pointer; 
+
+	}
+
+	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+		top		: 80px;
+		right	: 60px;
+
+		.icons-menu {
+
+			display		: none; 
+
+		}
+
+	}
 
 }
 
+
 .mh-menu-item {
 
-	float		: left;
-	display		: block;
+	display		: none;
 
-	font-size	: 1.8em;
-	font-weight	: 100;
+	@include breakpoint( $breakpoint-tablet-portrait ) {
 
-	padding		: 0 25px;
+		display		: block;
+
+		float		: left;
+		display		: block;
+
+		font-size	: 1.8em;
+		font-weight	: 400;
+
+		padding-left: 25px;
+
+	}
+
 
 }
 
@@ -75,7 +131,7 @@
 
 .mh-twitter {
 
-	font-size	: 4em;
+	font-size	: 7.2em;
 	color		: #fff;
 
 	opacity		: .5;
@@ -88,5 +144,15 @@
 
 	}
 
+ 	@include breakpoint( $breakpoint-tablet-portrait ) {
+
+ 		font-size	: 4em;
+
+	}
+
 
 }
+
+
+
+// }
