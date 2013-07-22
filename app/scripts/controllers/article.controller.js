@@ -17,12 +17,19 @@ define([
 
     var articleContent = $element[ 0 ].querySelector( '.ar-main' );
 
-    hammer( articleContent ).on( 'drag', function( event ) {
+    hammer( articleContent, {
 
-      articleContent.style.webkitTransform = 'translate( '+ Math.max( -60, Math.min( event.gesture.deltaX, 0 ) ) +'px )';
+      swipe_velocity: 0.1
+
+    }).on( 'swipeleft swiperight dragleft dragright', function( event ) {
+
+      var style = 'swipeleft' === event.type ? -60 : 0;
+
+      articleContent.style.webkitTransform = 'translate( '+ style +'px )';
+
+      event.gesture.preventDefault();
 
     });
-
 
   }]);
 

@@ -126,7 +126,7 @@ if ( 'production' == app.get('env') ) {
   twitter.stream( 'user', { 'with' : 'followings' }, function( stream ) {
 
     var tweet = JSON.parse( stream ),
-      urls = tweet.entities ? tweet.entities.urls : [];
+      urls = tweet && tweet.entities ? tweet.entities.urls : [];
 
     if( urls.length ) {
 

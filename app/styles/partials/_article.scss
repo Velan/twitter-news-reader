@@ -111,10 +111,16 @@
 		line-height		: 1em;
 		color			: #fff;
 
-		position		: relative;
+		// relative does not work on mobile safari
+		position		: absolute;
 		top				: 50%;
+		left			: 0; // avoids arbitrary positionning by browsers
 
-		margin-top		: -2.4em;
+		margin-top		: -24px; // ems do not work on mobile safari
+
+		width			: 100%;
+
+		text-align		: center;
 	}
 
 	@include breakpoint( $breakpoint-tablet-portrait ) {
@@ -230,7 +236,7 @@
 
 		transition		: all .2s ease-in-out;
 
-		.article:hover & {
+		.no-touch .article:hover & {
 
 			transform		: translate( -60px );
 
