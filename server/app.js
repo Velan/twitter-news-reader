@@ -54,20 +54,17 @@ require( __dirname + '/routes/index.js' );
 var server = http.createServer(app).listen(app.get('port'), function(){
 
   util.log('Express server listening on port ' + app.get('port'));
+  util.log( app.get('env') + ' environment' );
 
 });
-
 
 if ( 'production' === app.get('env') ) {
 
   require( './realtime/realtime' )( server ); // Start realtime
 
-  twitter.init(function() { // Check all tweets received since the server was down
-
-    twitter.stream(); // Init twitter stream API
-
-  });
-
+  twitter.init(); // Check all tweets received since the server was down
+  twitter.stream(); // Init twitter stream API
+    
 }
 else {
 

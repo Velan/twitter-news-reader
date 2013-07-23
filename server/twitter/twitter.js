@@ -252,10 +252,11 @@ exports.stream = function() {
 
 };
 
-exports.init = function( startStream ) {
+exports.init = function() {
 
   client.get( 'lastTweet', function( err, lastTweet ) {
     // if redis sends nill, means the value has not been set yet
+
     if( ! lastTweet ) {
 
       return;
@@ -264,7 +265,6 @@ exports.init = function( startStream ) {
 
     getTweets( lastTweet, '' );
 
-    startStream();
 
   });
 
