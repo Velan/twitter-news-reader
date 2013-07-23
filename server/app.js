@@ -68,6 +68,11 @@ if ( 'production' === app.get('env') ) {
 }
 else {
 
+  // require( './realtime/realtime' )( server ); // Start realtime
+
+  // twitter.init(); // Check all tweets received since the server was down
+  // twitter.stream(); // Init twitter stream API
+
   // io.sockets.on( 'connection', function( socket ) {
 
   //   var counter = 0;

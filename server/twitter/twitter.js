@@ -23,10 +23,10 @@ var util      = require( 'util' ),
 
 twitter.setAuth(
 
-  'DhA091XQ8JNtGZxEpD6asQ',
-  '24aDIc0P3Mv2ZVeYPN9oCIiVds9r6A4bHvwY7PaT4',
-  '43489522-gapOKQ0UGvSAGpRR3BH4AmBS6kWW0YFNT7tpURhdr',
-  'ggz7nhsDXEtJDHZOTdLsviNSBRiKVKggfol1Z2Wj0'
+  'TaNO1ODTu6WSwVHIjPJnNA',
+  '8DK15D6Rc5pzI6sl5QawEnCLpKuUMTj4iAONOXfsUc',
+  '1411838910-aL06r16fA3AuIuwl1SDXONID1ATeUYORo9V6Axw',
+  'MyI3v6vdXkwwM8KAin5D65ZXvOFWu0XqlM0DRXDrHfA'
 
 );
 
@@ -161,7 +161,7 @@ var unshortenUrl = function( originalUrl, callback ) {
 
 var tweetCallback = function( tweet ) {
 
-  if( 'string' !== typeof tweet ) {
+  if( 'string' === typeof tweet ) {
 
     tweet = JSON.stringify( tweet );
 
@@ -236,17 +236,6 @@ var getTweets = function( since, max ) {
 exports.stream = function() {
 
   util.log( 'Listening to twitter stream!' );
-
-  twitter.get( 'application/rate_limit_status', { ressource : 'statuses' }, function( data, error, status ) {
-
-    if( error ) {
-
-      util.error( 'Status '+status+', failed to fetch application rate limit status' );
-      return;
-
-    }
-
-  });
 
   twitter.stream( 'user', { 'with' : 'followings' }, tweetCallback );
 
