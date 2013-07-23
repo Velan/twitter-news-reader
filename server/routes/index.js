@@ -3,6 +3,8 @@
  * GET home page.
  */
 
+'use strict';
+
 var fs = require( 'fs' );
 
 

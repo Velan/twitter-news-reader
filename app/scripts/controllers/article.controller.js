@@ -19,13 +19,13 @@ define([
 
     hammer( articleContent, {
 
-      swipe_velocity: 0.1
+      'swipe_velocity': 0.5
 
     }).on( 'swipeleft swiperight dragleft dragright', function( event ) {
 
       var style = 'swipeleft' === event.type ? -60 : 0;
 
-      articleContent.style.webkitTransform = 'translate( '+ style +'px )';
+      articleContent.style[ Modernizr.prefixed( 'transform' ) ] = 'translate( '+ style +'px )';
 
       event.gesture.preventDefault();
 

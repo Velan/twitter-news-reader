@@ -3,10 +3,10 @@
  * GET users listing.
  */
 
+'use strict';
 
-var util    = require( 'util' )
-  , redis = require('redis')
-  , client = redis.createClient();
+var redis = require('redis'),
+  client = redis.createClient();
 
 exports.list = function( req, res ) {
 
@@ -45,12 +45,10 @@ exports.list = function( req, res ) {
     }
 
   );
-
-
 };
 
-exports.one = function( id ) {
+// exports.one = function( id ) {
 
 
 
-}
+// };
