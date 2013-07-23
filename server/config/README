@@ -1,0 +1,14 @@
+
+Some configuration parameters should be strictly private and not be shared among different environments. As we're using external APIs to retrieve data and parse that data, it is important not to overuse them for test purposes for instance.
+
+Every developper should have its own set of tokens for both Readability and Twitter.
+
+In order to generate your twitter tokens, see https://dev.twitter.com/apps
+
+For redability see http://www.readability.com/account/api
+
+Two files, that are excluded from versioning, are required.
+
+The first one is environment.json ( a default file is available ), it should contain the name of your local config file. That config file should be named $env.config.json where $env is the value of the environment property in environement.json.
+
+Your local environement file will overwrite any configuration in config.js which should contain general variables shared by all environements.

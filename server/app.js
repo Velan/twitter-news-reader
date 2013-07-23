@@ -58,33 +58,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 });
 
-if ( 'production' === app.get('env') ) {
+require( './realtime/realtime' )( server ); // Start realtime
 
-  require( './realtime/realtime' )( server ); // Start realtime
-
-  twitter.init(); // Check all tweets received since the server was down
-  twitter.stream(); // Init twitter stream API
-    
-}
-else {
-
-  // require( './realtime/realtime' )( server ); // Start realtime
-
-  // twitter.init(); // Check all tweets received since the server was down
-  // twitter.stream(); // Init twitter stream API
-
-  // io.sockets.on( 'connection', function( socket ) {
-
-  //   var counter = 0;
-
-  //   setInterval(function() {
-
-  //     socket.emit( 'nunc:article', { title : 'Socket test ' + counter, excerpt : 'Something has been pushed from the server!' });
-  //     counter++;
-
-  //   }, 10000);
-
-  // });
-
-}
-
+twitter.init(); // Check all tweets received since the server was down
+twitter.stream(); // Init twitter stream API

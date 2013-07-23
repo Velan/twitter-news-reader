@@ -12,33 +12,18 @@ var util      = require( 'util' ),
   unshorten   = require( 'unshorten' ),
   bigint      = require( 'bigint' ),
 
+  config      = require( '../config/config' ).config(),
+
   client    = redis.createClient(),
   clientPub = redis.createClient(),
 
   readability = new Readability({
 
-    parserToken : '9758b3e80135a64c816df2cf2efa6e91bf77d22e'
+    parserToken : config.readability.parserToken
 
   });
 
-twitter.setAuth(
-
-  'TaNO1ODTu6WSwVHIjPJnNA',
-  '8DK15D6Rc5pzI6sl5QawEnCLpKuUMTj4iAONOXfsUc',
-  '1411838910-aL06r16fA3AuIuwl1SDXONID1ATeUYORo9V6Axw',
-  'MyI3v6vdXkwwM8KAin5D65ZXvOFWu0XqlM0DRXDrHfA'
-
-);
-
-// twitter.setAuth(
-
-//   'HnfXXxqSDCdpVAROFs3A',
-//   '9V2j3jDkMf7YQs6MUEXV1ms394zE22sdlKo7TYwOHyI',
-//   '43489522-3tKruO5UyLuL07cw1T1H3kRgyRMMqrYC9icnSDb95',
-//   'LaqohKbNIhLM908xRy7ZTH9wvvYIFO3OATqNwlJtIg'
-
-// );
-
+twitter.setAuth.apply( twitter, config.twitter );
 
 var saveArticle = function( article, tweet ) {
 
@@ -163,7 +148,7 @@ var tweetCallback = function( tweet ) {
 
   if( 'string' === typeof tweet ) {
 
-    tweet = JSON.stringify( tweet );
+    tweet = JSON.parse( tweet );
 
   }
 
@@ -203,21 +188,18 @@ var getTweets = function( since, max ) {
 
   }
 
-  util.log( util.inspect( params ));
-
   twitter.get(
     'statuses/home_timeline',
     params,
     function( tweets ) {
 
-      util.log( tweets.length );
-
-      util.log( util.inspect( tweets ));
+      util.log( tweets.length + ' missed tweet(s), parsing now...' );
 
       tweets.forEach( tweetCallback );
 
       if( 200 > tweets.length ) {
 
+        util.log( 'Finished retrieving missed tweets.' );
         return;
 
       }

@@ -10,6 +10,8 @@
     "socket.io": "~0.9.16",
     "redis": "~0.8.4",
     "twitter-api": "~1.0.2",
-    "readability-api": "https://github.com/Velan/readability/tarball/master"
+    "readability-api": "https://github.com/Velan/readability/tarball/master",
+    "bigint": "~0.4.2",
+    "lodash": "~1.3.1"
   }
 }
