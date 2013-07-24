@@ -17,3 +17,8 @@ lib-cov
 pids
 logs
 results
+config
+!config/README
+!config/config.js
+!config/default.config.js
+!config/environment.json.default

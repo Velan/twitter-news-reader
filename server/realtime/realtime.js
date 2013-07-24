@@ -26,15 +26,17 @@ module.exports = function( server ) {
     'jsonp-polling'
   ]);
 
-  clientSub.psubscribe('article');
+  clientSub.subscribe( 'article' );
 
-  io.sockets.on( 'connection', function( socket ) {
+  // io.sockets.on( 'connection', function( socket ) {
 
-    clientSub.on( 'pmessage', function( pattern, channel, message ) {
 
-      socket.emit( 'nunc:article', JSON.parse( message ) );
 
-    });
+  // });
+
+  clientSub.on( 'message', function( channel, message ) {
+
+    io.sockets.emit( 'nunc:article', JSON.parse( message ) );
 
   });
 
