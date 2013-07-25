@@ -34,6 +34,8 @@ app.use( '/images', express.static( app.get( 'path_static' ) + '/images' ) );
 app.use( '/scripts', express.static( app.get( 'path_static' ) + '/scripts' ) );
 app.use( '/styles', express.static( app.get( 'path_static' ) + '/styles' ) );
 app.use( '/bower_components', express.static( app.get( 'path_static' ) + '/bower_components' ) );
+app.use( '/robots.txt', express.static( app.get( 'path_static' ) + '/robots.txt' ) );
+
 
 
 // development only

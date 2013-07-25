@@ -193,6 +193,11 @@ var getTweets = function( since, max ) {
     params,
     function( tweets ) {
 
+      if ( ! tweets ) {
+
+        return;
+      }
+
       util.log( tweets.length + ' missed tweet(s), parsing now...' );
 
       tweets.forEach( tweetCallback );
