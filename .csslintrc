@@ -1,0 +1,7 @@
+{
+    "bulletproof-font-face": false,
+    "universal-selector": false,
+    "box-sizing": false,
+    "compatible-vendor-prefixes": false,
+    "font-sizes": false
+}

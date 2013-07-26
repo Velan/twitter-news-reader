@@ -120,6 +120,14 @@ module.exports = function (grunt) {
         'server/{,*/}*.js'
       ]
     },
+    csslint: {
+      all: {
+        options: {
+          csslintrc: '.csslintrc',
+        },
+        src: [ '.tmp/styles/{,*/}*.css' ]
+      }
+    },
     mocha: {
       all: {
         options: {
@@ -358,6 +366,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'autoprefixer',
+      'csslint',
       'connect:livereload',
       'open',
       'watch'
@@ -368,6 +377,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
+    'csslint',
     'connect:test',
     'mocha'
   ]);
@@ -377,6 +387,7 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
+    'csslint',
     'requirejs',
     'concat',
     'cssmin',
@@ -391,5 +402,4 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
-
 };

@@ -34,7 +34,7 @@
 .article:last-of-type {
 
 	border			: 0;
-	box-shadow		: 0;
+	box-shadow		: none;
 
 }
 
@@ -125,6 +125,7 @@
 
 	@include breakpoint( $breakpoint-tablet-portrait ) {
 
+		background		: #e4e5e5;
 		background		: rgba( 0, 0, 0, .07 );
 
 		margin			: 0;

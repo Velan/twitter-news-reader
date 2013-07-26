@@ -11,6 +11,7 @@ var util      = require( 'util' ),
   crypto      = require( 'crypto' ),
   unshorten   = require( 'unshorten' ),
   bigint      = require( 'bigint' ),
+  urlParser   = require( 'url' ).parse,
 
   config      = require( '../config/config' ).config(),
 
@@ -58,8 +59,6 @@ var saveArticle = function( article, tweet ) {
 
         client.get( 'lastTweet', function( err, lastTweet ) {
 
-          console.log( parseInt( lastTweet, 10 ) < parseInt( tweet.id_str, 10 ) );
-
           if( parseInt( lastTweet, 10 ) < parseInt( tweet.id_str, 10 ) ) {
 
             client.set( 'lastTweet', tweet.id_str );
@@ -92,6 +91,10 @@ var confidenceCallback = function( url, callback ) {
 
       }
 
+      // Replace Redability's default url
+      article.url = url;
+      article.domain = urlParser( url ).hostname;
+
       callback( article );
 
     },
@@ -105,6 +108,8 @@ var confidenceCallback = function( url, callback ) {
 };
 
 var parseUrl = function( url, callback ) {
+
+  util.log( 'parsing' );
 
   readability.getConfidence(
 
@@ -135,9 +140,26 @@ var parseUrl = function( url, callback ) {
 
 var unshortenUrl = function( originalUrl, callback ) {
 
-  unshorten( originalUrl, function( url ) {
+  var parsedOriginalUrl = urlParser( originalUrl );
 
-    parseUrl( url, callback );
+  unshorten( originalUrl, function( unshortenedUrl ) {
+
+    var parsedUnshortenedUrl = urlParser( unshortenedUrl );
+
+    /* 
+      If the result is on the same domain, we keep the original url,
+      Some websites ( such as the NYTimes ), apparently endlessly redirect until
+      the index page
+    */
+
+    if( parsedOriginalUrl.hostname === parsedUnshortenedUrl.hostname ) {
+
+      parseUrl( originalUrl, callback );
+      return;
+
+    }
+
+    unshortenUrl( unshortenedUrl, callback );
 
   });
 
@@ -246,3 +268,4 @@ exports.init = function() {
 
 };
 
+exports.saveArticle = saveArticle;
