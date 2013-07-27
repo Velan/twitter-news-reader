@@ -13,7 +13,7 @@ var util      = require( 'util' ),
   bigint      = require( 'bigint' ),
   urlParser   = require( 'url' ).parse,
 
-  config      = require( '../config/config' ).config(),
+  config      = require( '../config/config' ).config,
 
   client    = redis.createClient(),
   clientPub = redis.createClient(),
@@ -30,7 +30,9 @@ var saveArticle = function( article, tweet ) {
 
   var key = crypto.createHmac( 'sha1', 'zizito el bandito' )
     .update( article.url )
-    .digest( 'hex' );
+    .digest( 'hex' ),
+
+    print = ( undefined !== print ) ? print : true;
 
   var stringResponse = JSON.stringify( article );
 
@@ -54,7 +56,6 @@ var saveArticle = function( article, tweet ) {
 
         }
 
-        util.log( 'Added new article: ' + article.title );
         clientPub.publish( 'article', stringResponse );
 
         client.get( 'lastTweet', function( err, lastTweet ) {

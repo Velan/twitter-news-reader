@@ -9,6 +9,8 @@ exports.config = function() {
 
   var config = {
 
+    redis : '/etc/redis.conf',
+
     environment : 'default',
 
     twitter : [
@@ -32,4 +34,4 @@ exports.config = function() {
 
   return config;
 
-};
+}.call();

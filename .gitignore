@@ -22,3 +22,5 @@ config
 !config/config.js
 !config/default.config.js
 !config/environment.json.default
+
+server/.jobs.json

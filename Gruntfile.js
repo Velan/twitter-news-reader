@@ -123,7 +123,7 @@ module.exports = function (grunt) {
     csslint: {
       all: {
         options: {
-          csslintrc: '.csslintrc',
+          csslintrc: '.csslintrc'
         },
         src: [ '.tmp/styles/{,*/}*.css' ]
       }
