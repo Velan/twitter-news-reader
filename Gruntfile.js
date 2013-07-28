@@ -377,9 +377,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
-    'csslint',
-    'connect:test',
-    'mocha'
+    'connect:test'
   ]);
 
   grunt.registerTask('build', [

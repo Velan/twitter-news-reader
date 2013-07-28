@@ -5,62 +5,52 @@
 
 'use strict';
 
-var express = require('express'),
-  http = require( 'http' ),
+
+var cluster = require( 'cluster' ),
   util = require( 'util' ),
-  // routes = require('./routes'),
-  news = require('./routes/news'),
-  http = require('http'),
-  path = require('path'),
+  cpus = require( 'os' ).cpus().length;
 
-  twitter = require( './twitter/twitter' );
+// Creating child processes
+// The master's will only consist in creating child processes
 
-var app = express();
-// all environments
+if( cluster.isMaster ) {
 
-app.set( 'port', process.env.PORT || 3000 );
+  util.log( 'Node started' );
 
-// set the path to the static ressources
-app.set( 'static', process.env.static || '../dist' );
-app.set( 'path_static', path.normalize( path.join( __dirname, app.get( 'static' ) ) ) );
-app.use( express.favicon() );
-app.use( express.logger('dev') );
-app.use( express.compress() );
-app.use( express.bodyParser() );
-app.use( express.methodOverride() );
-app.use( app.router );
+  var workers = Math.max( cpus, 2 ),
 
-app.use( '/images', express.static( app.get( 'path_static' ) + '/images' ) );
-app.use( '/scripts', express.static( app.get( 'path_static' ) + '/scripts' ) );
-app.use( '/styles', express.static( app.get( 'path_static' ) + '/styles' ) );
-app.use( '/bower_components', express.static( app.get( 'path_static' ) + '/bower_components' ) );
-app.use( '/robots.txt', express.static( app.get( 'path_static' ) + '/robots.txt' ) );
+    // specific modules to start
+    modules = [ 'twitter' ];
 
+  for (var i = 0; i < workers; i++) {
 
+    cluster.fork({ module : modules[ i ] });
 
-// development only
-if ( 'development' === app.get('env') ) {
+  };
 
-  app.use( express.errorHandler() );
+  util.log( workers + ' child processes' )
+
+  cluster.on( 'disconnect', function( worker, code, signal ) {
+
+    util.log( 'Worker disconnected' );
+    cluster.fork( worker.env );
+
+  });
+
+  return;
 
 }
 
-require( __dirname + '/routes/index.js' )( app );
+switch( process.env.module ) {
 
-app.get( '/api/news', news.list );
-// app.get( '/api/news/:id', news.one );
+  case 'twitter':
 
+    var twitter = require( './twitter/twitter' );
 
-require( __dirname + '/routes/index.js' );
+    twitter.init(); // Check all tweets received since the server was down
+    twitter.stream(); // Init twitter stream API
+    break;
+  default:
+    require( './express' );
 
-var server = http.createServer(app).listen(app.get('port'), function(){
-
-  util.log('Express server listening on port ' + app.get('port'));
-  util.log( app.get('env') + ' environment' );
-
-});
-
-require( './realtime/realtime' )( server ); // Start realtime
-
-twitter.init(); // Check all tweets received since the server was down
-twitter.stream(); // Init twitter stream API
+}

@@ -5,6 +5,7 @@
 'use strict';
 
 var util      = require( 'util' ),
+  domain      = require( 'domain' ),
   twitter     = require( 'twitter-api' ).createClient(),
   redis       = require( 'redis' ),
   Readability = require( 'readability-api' ),
@@ -23,6 +24,39 @@ var util      = require( 'util' ),
     parserToken : config.readability.parserToken
 
   });
+
+var d = domain.create();
+
+d.on( 'error', function( err ) {
+
+  util.log( 'Twitter module unexpected error' );
+  util.log( util.inspect( err.stack ) );
+
+  try {
+
+    var shutdownTime = setTimeout(function() {
+
+      process.exit( 1 );
+
+    }, 30000);
+
+    shutdownTime.unref();
+
+    // Stop accepting connections
+    server.close();
+
+    // Tell the master we're dead and pop another cluster
+    cluster.worker.disconnect();
+
+  }
+  catch( err ) {
+
+    util.log( 'Everything went wrong' );
+    util.log( util.inspect( err.stack ) );
+
+  }
+
+});
 
 twitter.setAuth.apply( twitter, config.twitter );
 
@@ -185,11 +219,13 @@ var tweetCallback = function( tweet ) {
 
   urls.forEach(function( url ) {
 
-    unshortenUrl( url.expanded_url, function( article ) {
+    util.log( url.expanded_url );
 
-      saveArticle( article, tweet );
+    // unshortenUrl( url.expanded_url, function( article ) {
 
-    });
+    //   saveArticle( article, tweet );
+
+    // });
 
   });
 
@@ -225,7 +261,7 @@ var getTweets = function( since, max ) {
 
       tweets.forEach( tweetCallback );
 
-      if( 200 > tweets.length ) {
+      if( 0 === tweets.length ) {
 
         util.log( 'Finished retrieving missed tweets.' );
         return;
@@ -233,7 +269,7 @@ var getTweets = function( since, max ) {
       }
       else {
 
-        max = bigint( tweets[ 199 ].id_str ).sub( 1 ).toString();
+        max = bigint( tweets[ tweets.length - 1 ].id_str ).sub( 1 ).toString();
         getTweets( since, max );
 
       }
@@ -262,11 +298,11 @@ exports.init = function() {
 
     }
 
+    return;
+
     getTweets( lastTweet, '' );
 
 
   });
 
 };
-
-exports.saveArticle = saveArticle;
