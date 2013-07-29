@@ -6,7 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "unshorten": "https://github.com/mathiasbynens/node-unshorten/tarball/master",
+    "unshorten": "https://github.com/Velan/node-unshorten/tarball/master",
     "express": "3.3.4",
     "socket.io": "~0.9.16",
     "redis": "~0.8.4",

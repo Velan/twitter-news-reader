@@ -4,8 +4,7 @@
 
 'use strict';
 
-var util      = require( 'util' ),
-  domain      = require( 'domain' ),
+var util        = require( 'util' ),
   twitter     = require( 'twitter-api' ).createClient(),
   redis       = require( 'redis' ),
   Readability = require( 'readability-api' ),
@@ -16,47 +15,14 @@ var util      = require( 'util' ),
 
   config      = require( '../config/config' ).config,
 
-  client    = redis.createClient(),
-  clientPub = redis.createClient(),
+  client      = redis.createClient(),
+  clientPub   = redis.createClient(),
 
   readability = new Readability({
 
     parserToken : config.readability.parserToken
 
   });
-
-var d = domain.create();
-
-d.on( 'error', function( err ) {
-
-  util.log( 'Twitter module unexpected error' );
-  util.log( util.inspect( err.stack ) );
-
-  try {
-
-    var shutdownTime = setTimeout(function() {
-
-      process.exit( 1 );
-
-    }, 30000);
-
-    shutdownTime.unref();
-
-    // Stop accepting connections
-    server.close();
-
-    // Tell the master we're dead and pop another cluster
-    cluster.worker.disconnect();
-
-  }
-  catch( err ) {
-
-    util.log( 'Everything went wrong' );
-    util.log( util.inspect( err.stack ) );
-
-  }
-
-});
 
 twitter.setAuth.apply( twitter, config.twitter );
 
@@ -69,6 +35,10 @@ var saveArticle = function( article, tweet ) {
     print = ( undefined !== print ) ? print : true;
 
   var stringResponse = JSON.stringify( article );
+
+  delete article.content;
+
+  var pushResponse = JSON.stringify( article );
 
   client.set( key, stringResponse, function( err, result ) {
 
@@ -90,7 +60,9 @@ var saveArticle = function( article, tweet ) {
 
         }
 
-        clientPub.publish( 'article', stringResponse );
+        util.log( 'Article added: ' + article.title );
+
+        clientPub.publish( 'article', pushResponse );
 
         client.get( 'lastTweet', function( err, lastTweet ) {
 
@@ -144,8 +116,6 @@ var confidenceCallback = function( url, callback ) {
 
 var parseUrl = function( url, callback ) {
 
-  util.log( 'parsing' );
-
   readability.getConfidence(
 
     url,
@@ -181,11 +151,9 @@ var unshortenUrl = function( originalUrl, callback ) {
 
     var parsedUnshortenedUrl = urlParser( unshortenedUrl );
 
-    /* 
-      If the result is on the same domain, we keep the original url,
-      Some websites ( such as the NYTimes ), apparently endlessly redirect until
-      the index page
-    */
+      // If the result is on the same domain, we keep the original url,
+      // Some websites ( such as the NYTimes ), apparently endlessly redirect until
+      // the index page
 
     if( parsedOriginalUrl.hostname === parsedUnshortenedUrl.hostname ) {
 
@@ -200,7 +168,6 @@ var unshortenUrl = function( originalUrl, callback ) {
 
 };
 
-
 var tweetCallback = function( tweet ) {
 
   if( 'string' === typeof tweet ) {
@@ -209,25 +176,32 @@ var tweetCallback = function( tweet ) {
 
   }
 
-  var urls = tweet && tweet.entities ? tweet.entities.urls : [];
+  var urls = ( tweet && tweet.entities ) ? tweet.entities.urls : [];
 
   if( ! urls.length ) {
 
     util.log( 'No urls in tweet' );
+    return;
 
   }
 
   urls.forEach(function( url ) {
 
-    util.log( url.expanded_url );
+    unshortenUrl( url.expanded_url, function( article ) {
 
-    // unshortenUrl( url.expanded_url, function( article ) {
+      saveArticle( article, tweet );
 
-    //   saveArticle( article, tweet );
-
-    // });
+    });
 
   });
+
+};
+
+var handleLimit = function( since, max, callback ) {
+
+  var resetTime = twitter.getLastMeta().reset * 1000 - Date.now() + 10000;
+  setTimeout(callback, resetTime);
+
 
 };
 
@@ -235,7 +209,7 @@ var getTweets = function( since, max ) {
 
   var params = {
 
-    count       : 200,
+    count       : 500,
     since_id    : since,
     trim_user   : true
 
@@ -250,16 +224,26 @@ var getTweets = function( since, max ) {
   twitter.get(
     'statuses/home_timeline',
     params,
-    function( tweets ) {
+    function( tweets, error, status ) {
+
+      if( error && 429 === status ) {
+
+        handleLimit( since, max, function() {
+
+          getTweets( since, max );
+
+        });
+        return;
+
+      }
 
       if ( ! tweets ) {
 
         return;
+
       }
 
       util.log( tweets.length + ' missed tweet(s), parsing now...' );
-
-      tweets.forEach( tweetCallback );
 
       if( 0 === tweets.length ) {
 
@@ -270,9 +254,24 @@ var getTweets = function( since, max ) {
       else {
 
         max = bigint( tweets[ tweets.length - 1 ].id_str ).sub( 1 ).toString();
+
+        if( ! twitter.getRateLimitRemaining() ) {
+
+          handleLimit( since, max, function() {
+
+            getTweets( since, max );
+
+          });
+
+          return;
+
+        }
+
         getTweets( since, max );
 
       }
+
+      tweets.forEach( tweetCallback );
 
     }
   );
@@ -289,16 +288,16 @@ exports.stream = function() {
 
 exports.init = function() {
 
-  client.get( 'lastTweet', function( err, lastTweet ) {
-    // if redis sends nill, means the value has not been set yet
+  util.log( 'Init twitter' );
 
+  client.get( 'lastTweet', function( err, lastTweet ) {
+
+    // if redis sends nill, means the value has not been set yet
     if( ! lastTweet ) {
 
       return;
 
     }
-
-    return;
 
     getTweets( lastTweet, '' );
 

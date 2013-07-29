@@ -7,41 +7,84 @@
 
 
 var cluster = require( 'cluster' ),
+  domain = require( 'domain' ),
   util = require( 'util' ),
   cpus = require( 'os' ).cpus().length;
 
 // Creating child processes
 // The master's will only consist in creating child processes
 
+var bindDisconnect = function( worker, env ) {
+
+  worker.on( 'disconnect', function() {
+
+    var newWorker = cluster.fork( env );
+
+    bindDisconnect( newWorker, env );
+
+  });
+
+};
+
 if( cluster.isMaster ) {
 
   util.log( 'Node started' );
 
-  var workers = Math.max( cpus, 2 ),
+  var workers = [],
+    workersCount = Math.max( cpus, 2 ),
 
     // specific modules to start
     modules = [ 'twitter' ];
 
-  for (var i = 0; i < workers; i++) {
+  for (var i = 0; i < workersCount; i++) {
 
-    cluster.fork({ module : modules[ i ] });
+    var env = { module : modules[ i ] };
 
-  };
+    workers.push( cluster.fork( env ) );
 
-  util.log( workers + ' child processes' )
+    bindDisconnect( workers[ i ], env );
 
-  cluster.on( 'disconnect', function( worker, code, signal ) {
+  }
 
-    util.log( 'Worker disconnected' );
-    cluster.fork( worker.env );
-
-  });
+  util.log( workersCount + ' child processes' );
 
   return;
 
 }
 
-switch( process.env.module ) {
+var workerDomain = domain.create();
+
+workerDomain.on( 'error', function( err ) {
+
+  util.log( 'Application unexpected error' );
+  console.log( err );
+
+  try {
+
+    // Tell the master we're dead and pop another cluster
+    cluster.worker.disconnect();
+
+    var shutdownTime = setTimeout(function() {
+
+      process.exit( 1 );
+
+    }, 30000);
+
+    shutdownTime.unref();
+
+  }
+  catch( err ) {
+
+    util.log( 'Everything went wrong' );
+    util.log( util.inspect( err ) );
+
+  }
+
+});
+
+workerDomain.run(function() {
+
+  switch( process.env.module ) {
 
   case 'twitter':
 
@@ -53,4 +96,6 @@ switch( process.env.module ) {
   default:
     require( './express' );
 
-}
+  }
+
+});

@@ -1,5 +1,9 @@
 
-var domain = require( 'domain' ),
+'use strict';
+
+var cluster = require( 'cluster' ),
+  domain = require( 'domain' ),
+  util = require( 'util' ),
   express = require('express'),
   http = require( 'http' ),
   news = require('./routes/news'),
@@ -8,8 +12,53 @@ var domain = require( 'domain' ),
 
   realtime = require( './realtime/realtime' );
 
-var app = express();
-// all environments
+var app = express(),
+  req,
+  res;
+
+var requestDomain = domain.create();
+
+requestDomain.on( 'error', function( err ) {
+
+  util.log( 'Unexpected error when accessing ' + req.url );
+  util.log( util.inspect( err.stack ) );
+
+  try {
+
+    // Tell the master we're dead and pop another cluster
+    cluster.worker.disconnect();
+
+    var shutdownTime = setTimeout(function() {
+
+      process.exit( 1 );
+
+    }, 30000);
+
+    shutdownTime.unref();
+
+    res.writeHead( 500 );
+    res.end('An unexpected error occured, please refresh your page.');
+
+  }
+  catch( err ) {
+
+    util.log( 'Error sending HTTP 500' );
+    util.log( util.inspect( err.stack ) );
+
+  }
+
+});
+
+
+app.use(function( req, res, next ) {
+
+  requestDomain.add( req );
+  requestDomain.add( res );
+
+  requestDomain.run( next );
+
+});
+
 
 app.set( 'port', process.env.PORT || 3000 );
 
@@ -29,15 +78,6 @@ app.use( '/styles', express.static( app.get( 'path_static' ) + '/styles' ) );
 app.use( '/bower_components', express.static( app.get( 'path_static' ) + '/bower_components' ) );
 app.use( '/robots.txt', express.static( app.get( 'path_static' ) + '/robots.txt' ) );
 
-
-
-// development only
-if ( 'development' === app.get('env') ) {
-
-  app.use( express.errorHandler() );
-
-}
-
 require( __dirname + '/routes/index.js' )( app );
 
 app.get( '/api/news', news.list );
@@ -46,47 +86,7 @@ app.get( '/api/news', news.list );
 
 require( __dirname + '/routes/index.js' );
 
-var server = http.createServer(app).listen(app.get('port'), function(){
-
-  var d = domain.create();
-
-  d.on( 'error', function( err ) {
-
-    util.log( util.inspect( err.stack ) );
-    util.log( 'Unexpected error on server request' );
-
-    try {
-
-      var shutdownTime = setTimeout(function() {
-
-        process.exit( 1 );
-
-      }, 30000);
-
-      shutdownTime.unref();
-
-      // Stop accepting connections
-      server.close();
-
-      // Tell the master we're dead and pop another cluster
-      cluster.worker.disconnect();
-
-      res.statusCode = 500;
-      res.setHeader('content-type', 'text/plain');
-
-      res.end( 'An unexpected error happened!\n' );
-
-
-    }
-    catch( err ) {
-
-      util.log( 'Everything went wrong' );
-      util.log( util.inspect( err.stack ) );
-
-    }
-
-
-  });
+var server = http.createServer(app).listen(app.get('port'), function() {
 
 });
 
